@@ -1,0 +1,20 @@
+import time
+import win32com.client
+import glob
+
+path_to_folder = "C:\\Users\\user1\\PycharmProjects\\for_work\\new_pst"
+list_of_psts = glob.glob(path_to_folder+"\\*.pst")
+
+print(f"всего архивов в папке - {len(list_of_psts)}")
+
+# Адрес отправителя
+sender_email = "natalia.tumanova@rencons.com"
+
+# Создаем объект Outlook
+outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+
+# Путь к новому PST-файлу
+new_pst_path = "C:\\Users\\user1\\PycharmProjects\\for_work\\combined.pst"
+
+outlook.AddStore(new_pst_path)
+pst_name = "Outlook Data File"

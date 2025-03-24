@@ -1,0 +1,54 @@
+import glob
+import time
+
+import win32com.client
+import os
+
+# Путь к папке с PST-файлами
+path_to_folder = "C:\\Users\\user1\\PycharmProjects\\for_work\\new_pst"
+list_of_psts = glob.glob(path_to_folder+"\\*.pst")
+
+# Создаем объект Outlook
+outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+
+# Путь к новому PST-файлу
+new_pst_path = "C:\\Users\\user1\\PycharmProjects\\for_work\\combined.pst"
+
+outlook.AddStore(new_pst_path)
+pst_name = "Outlook Data File"
+try:
+    root_folder = outlook.Folders.Item(pst_name)
+except Exception as e:
+    print(f"Ошибка при получении папки PST-файла: {new_pst_path}, ошибка: {e}")
+    outlook.RemoveStore(new_pst_path)
+    exit()
+
+try:
+    inbox_folder = root_folder.Folders.Add("Inbox")
+    # sent_folder = root_folder.Folders.Add("Sent")
+except Exception as e:
+    # print(f"EXCEPTION {e}")
+    inbox_folder = root_folder.Folders.Item("Inbox")
+    # sent_folder = root_folder.Folders.Item("Sent")
+
+counter_msgs = 0
+
+for pst_path in list_of_psts:
+    try:
+        outlook.AddStore(pst_path)
+        copy_from = outlook.Folders.Item("Personal folders")
+    except Exception as e:
+        print(f"Ошибка при открытии PST-файла: {e}")
+        exit()
+    print(f"Executing for {pst_path}")
+    copy_inbox = copy_from.Folders.Item("Inbox")
+    # copy_sent = copy_from.Folders.Item("Sent")
+    for i in copy_inbox.Items:
+        msg_copy = i.Copy()
+        msg_copy.Move(inbox_folder)
+    # for i in copy_sent.Items:
+    #     msg_copy = i.Copy()
+    #     msg_copy.Move(sent_folder)
+    outlook.RemoveStore(copy_from)
+
+    time.sleep(2)

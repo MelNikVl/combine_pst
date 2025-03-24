@@ -4,15 +4,15 @@ import time
 import win32com.client
 import os
 
-# Путь к папке с PST-файлами
-path_to_folder = "C:\\Users\\user1\\PycharmProjects\\for_work\\new_pst"
+# Path to the folder with PST files
+path_to_folder = "C:\\PST_E"
 list_of_psts = glob.glob(path_to_folder+"\\*.pst")
 
-# Создаем объект Outlook
+# Create an Outlook object
 outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
 
-# Путь к новому PST-файлу
-new_pst_path = "C:\\Users\\user1\\PycharmProjects\\for_work\\combined.pst"
+# Path to new PST file
+new_pst_path = "C:\\PST_E\\combined.pst"
 
 outlook.AddStore(new_pst_path)
 pst_name = "Outlook Data File"
